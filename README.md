@@ -7,7 +7,6 @@ INSTRUCTIOS: -->
 
 https://mad9124.github.io/W2021/deliverables/final.html#the-brief
 
-<!-- teste  -->
 <h1> Logistics </h1> 
 Create a new private GitHub repository called mad9124-w21-p1-giftr, and import this GitHub starter repo (opens new window)for the initial project structure.
 

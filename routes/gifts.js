@@ -37,11 +37,12 @@ router.get("/:id", authUser, async (req, res) => {
 
 // ------------------------------------
 
+// Gift UPDATE route
 const update =
   (overwrite = false) =>
   async (req, res) => {
     try {
-      const document = await Course.findByIdAndUpdate(
+      const document = await Gift.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
         {
@@ -61,7 +62,9 @@ router.put(
   "/:id",
   authAdmin,
   update(true),
+
   router.patch("/:id", authAdmin, update(false)),
+
   router.delete("/:id", authAdmin, async (req, res) => {
     try {
       const document = await Course.findByIdAndDelete(req.params.id);

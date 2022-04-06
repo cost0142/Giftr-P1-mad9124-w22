@@ -1,17 +1,20 @@
-import createDebug from "debug";
 import sanitizeBody from "../middleware/sanitizeBody.js";
-import Student from "../models/Student.js";
+import Student from "../models/Person.js";
+import User from "../models/Users.js";
 import express from "express";
 import authUser from "../middleware/auth.js";
 import authAdmin from "../middleware/authAdmin.js";
 
-const debug = createDebug("mad9124-w21-a3-jwt-auth");
+// const debug = createDebug("mad9124-w21-a3-jwt-auth");
+
 const router = express.Router();
 
-router.use("/", authUser, sanitizeBody);
-router.get("/", async (req, res) => {
-  let students = await Student.find();
-  res.send({ data: formatResponseData(students) });
+// router.use("/", authUser, sanitizeBody);
+
+router.get("/", authUser, async (req, res) => {
+  let user = await User.findById(req.user._id);
+  let collection = await Person.find({ owner: user._id }).populate("gifts");
+  res.send({ data: collection });
 });
 
 // Student POST route.

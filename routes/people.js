@@ -89,7 +89,7 @@ router.delete("/:id", authUser, async (req, res) => {
  * @returns
  */
 
-function formatResponseData(payload, type = "student") {
+function formatResponseData(payload, type = "people") {
   if (payload instanceof Array) {
     return payload.map((resource) => format(resource));
   } else {
@@ -100,18 +100,6 @@ function formatResponseData(payload, type = "student") {
     const { _id, ...attributes } = resource.toObject();
     return { type, id: _id, attributes };
   }
-}
-
-function sendResourceNotFound(req, res) {
-  res.status(404).json({
-    errors: [
-      {
-        status: "404",
-        title: "Resource not found",
-        description: `We could not find a student with id: ${req.params.id}`,
-      },
-    ],
-  });
 }
 
 export default router;

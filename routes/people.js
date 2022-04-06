@@ -15,7 +15,7 @@ router.use("/", authUser, sanitizeBody);
 router.get("/", authUser, async (req, res) => {
   let user = await User.findById(req.user._id);
   let collection = await Person.find({ owner: user._id });
-  res.send({ data: collection });
+  res.json(formatResponseData(gift));
 });
 
 // Person POST route.

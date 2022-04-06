@@ -2,8 +2,11 @@ import createDebug from "debug";
 import sanitizeBody from "../middleware/sanitizeBody.js";
 import Gift from "../models/Gift.js";
 import express from "express";
+
 import authUser from "../middleware/auth.js";
 import authAdmin from "../middleware/authAdmin.js";
+
+import ResourceNotFoundError from "../exceptions/ResourceNotFoundException.js";
 
 const debug = createDebug("mad9124-w22-p1-giftr");
 const router = express.Router();
@@ -96,18 +99,6 @@ function formatResponseData(payload, type = "gift") {
     const { _id, ...attributes } = resource.toObject();
     return { type, id: _id, attributes };
   }
-}
-
-function sendResourceNotFound(req, res) {
-  res.status(404).json({
-    errors: [
-      {
-        status: "404",
-        title: "Resource not found",
-        description: `We could not find a course with id: ${req.params.id}`,
-      },
-    ],
-  });
 }
 
 export default router;

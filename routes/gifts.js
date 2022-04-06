@@ -24,9 +24,10 @@ router.post("/", authAdmin, (req, res, next) => {
     .catch(next);
 });
 
+// Gift GET one gift route
 router.get("/:id", authUser, async (req, res) => {
   try {
-    const document = await Course.findById(req.params.id);
+    const document = await Gift.findById(req.params.id);
     if (!document) throw new Error("resource not found");
     res.json({ data: formatResponseData(document) });
   } catch (err) {

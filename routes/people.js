@@ -66,8 +66,10 @@ const update =
 router.put(
   "/:id",
   authAdmin,
+  sanitizeBody,
   update(true),
-  router.patch("/:id", authAdmin, update(false)),
+  router.patch("/:id", authUser, sanitizeBody, update(false)),
+
   router.delete("/:id", authAdmin, async (req, res) => {
     try {
       const document = await Student.findByIdAndDelete(req.params.id);

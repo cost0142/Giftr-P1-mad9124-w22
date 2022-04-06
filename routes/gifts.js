@@ -28,13 +28,17 @@ router.post("/", authAdmin, (req, res, next) => {
 });
 
 // Gift GET one gift route
-router.get("/:id", authUser, async (req, res) => {
+router.get("/:id", authUser, async (req, res, next) => {
   try {
-    const document = await Gift.findById(req.params.id);
-    if (!document) throw new Error("resource not found");
-    res.json({ data: formatResponseData(document) });
+    const gift = await Gift.findById(req.params.id);
+    if (!gift) {
+      throw new ResourceNotFoundError(
+        `We could not find a gift with id: ${req.params.id}`
+      );
+    }
+    res.json(formatResponseData(gift));
   } catch (err) {
-    sendResourceNotFound(req, res);
+    next(err);
   }
 });
 

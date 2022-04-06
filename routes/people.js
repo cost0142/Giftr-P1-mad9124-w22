@@ -10,19 +10,24 @@ import authAdmin from "../middleware/authAdmin.js";
 const router = express.Router();
 
 // router.use("/", authUser, sanitizeBody);
-
 router.get("/", authUser, async (req, res) => {
   let user = await User.findById(req.user._id);
   let collection = await Person.find({ owner: user._id }).populate("gifts");
   res.send({ data: collection });
 });
 
-// Student POST route.
-router.post("/", authAdmin, (req, res, next) => {
-  new Student(req.sanitizedBody)
-    .save()
-    .then((newStudent) => res.status(201).json(formatResponseData(newStudent)))
-    .catch(next);
+// Person POST route.
+router.post("/", authUser, sanitizeBody, async (req, res, next) => {
+  let newDocument = new Person(req.sanitizedBody);
+  try {
+    let user = await User.findById(req.user._id);
+    newDocument.owner = user;
+    await newDocument.save();
+    res.status(201).send({ data: newDocument });
+  } catch (err) {
+    log.errors(err);
+    handleError(err);
+  }
 });
 
 router.get("/:id", authUser, async (req, res) => {

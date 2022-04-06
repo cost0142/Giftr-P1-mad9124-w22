@@ -1,15 +1,17 @@
 import sanitizeBody from "../middleware/sanitizeBody.js";
-import Student from "../models/Person.js";
+import Person from "../models/Person.js";
 import User from "../models/Users.js";
 import express from "express";
 import authUser from "../middleware/auth.js";
 import authAdmin from "../middleware/authAdmin.js";
 
-// const debug = createDebug("mad9124-w21-a3-jwt-auth");
+import ResourceNotFoundException from "../exceptions/ResourceNotFoundException.js";
 
+const debug = createDebug("mad9124-w22-p1-giftr");
 const router = express.Router();
 
-// router.use("/", authUser, sanitizeBody);
+router.use("/", authUser, sanitizeBody);
+
 router.get("/", authUser, async (req, res) => {
   let user = await User.findById(req.user._id);
   let collection = await Person.find({ owner: user._id }).populate("gifts");
@@ -17,34 +19,26 @@ router.get("/", authUser, async (req, res) => {
 });
 
 // Person POST route.
-router.post("/", authUser, sanitizeBody, async (req, res, next) => {
-  let newDocument = new Person(req.sanitizedBody);
-  try {
-    let user = await User.findById(req.user._id);
-    newDocument.owner = user;
-    await newDocument.save();
-    res.status(201).send({ data: newDocument });
-  } catch (err) {
-    log.errors(err);
-    handleError(err);
-  }
+router.post("/", authAdmin, (req, res, next) => {
+  new Person(req.sanitizedBody)
+    .save()
+    .then((newPerson) => res.status(201).json(formatResponseData(newPerson)))
+    .catch(next);
 });
 
-router.get("/:id", authUser, async (req, res) => {
+router.get("/:id", authUser, async (req, res, next) => {
   try {
     const document = await Person.findById(req.params.id).populate("gifts");
-    if (!document)
-      throw new sendResourceNotFoundException("Resource not found");
-
-    res.send({ data: document });
+    if (!document) throw new ResourceNotFoundException("Resource not found");
+    res.json(formatResponseData(gift));
   } catch (err) {
-    sendResourceNotFound(req, res);
+    next(err);
   }
 });
 
 const update =
   (overwrite = false) =>
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const document = await Person.findByIdAndUpdate(
         req.params.id,
@@ -55,30 +49,27 @@ const update =
           runValidators: true,
         }
       );
-      if (!document)
-        throw new sendResourceNotFoundException("Resource not found");
+      if (!document) throw new ResourceNotFoundException("Resource not found");
       res.send({ data: document });
     } catch (err) {
-      handleError(req, res);
+      next(err);
     }
   };
 
-router.put(
-  "/:id",
-  authAdmin,
-  sanitizeBody,
-  update(true),
-  router.patch("/:id", authUser, sanitizeBody, update(false))
-);
+router.put("/:id", authAdmin, update(true));
 
-router.delete("/:id", authUser, async (req, res) => {
+router.patch("/:id", authUser, update(false));
+
+router.delete("/:id", authUser, async (req, res, next) => {
   try {
     const document = await Person.findByIdAndRemove(req.params.id);
-    if (!document)
-      throw new sendResourceNotFoundException("Resource not found");
-    res.send({ data: document });
+    if (!document) {
+      throw new ResourceNotFoundError(
+        `We could not find a gift with id: ${req.params.id}`
+      );
+    }
   } catch (err) {
-    handleErrors(req, res);
+    next(err);
   }
 });
 

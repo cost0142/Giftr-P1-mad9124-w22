@@ -26,6 +26,6 @@ const schema = new mongoose.Schema(
   }
 );
 
-const Model = mongoose.model("Course", schema);
+const Model = mongoose.model("Person", schema);
 
 export default Model;

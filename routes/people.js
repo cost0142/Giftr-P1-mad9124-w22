@@ -46,7 +46,7 @@ const update =
   (overwrite = false) =>
   async (req, res) => {
     try {
-      const document = await Student.findByIdAndUpdate(
+      const document = await Person.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
         {
@@ -55,10 +55,11 @@ const update =
           runValidators: true,
         }
       );
-      if (!document) throw new Error("Resource not found");
-      res.send({ data: formatResponseData(document) });
+      if (!document)
+        throw new sendResourceNotFoundException("Resource not found");
+      res.send({ data: document });
     } catch (err) {
-      sendResourceNotFound(req, res);
+      handleError(req, res);
     }
   };
 

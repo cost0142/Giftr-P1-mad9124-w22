@@ -64,13 +64,17 @@ router.put("/:id", authAdmin, update(true));
 // Gift PATCH route
 router.patch("/:id", authAdmin, update(false));
 
-router.delete("/:id", authAdmin, async (req, res) => {
+//Gift delete route
+router.delete("/:id", authAdmin, async (req, res, next) => {
   try {
-    const document = await Course.findByIdAndDelete(req.params.id);
-    if (!document) throw new Error("resource not found");
-    res.send({ data: formatResponseData(document) });
+    const gift = await Gift.findByIdAndRemove(req.params.id);
+    if (!gift) {
+      throw new ResourceNotFoundError(
+        `We could not find a gift with id: ${req.params.id}`
+      );
+    }
   } catch (err) {
-    sendResourceNotFound(req, res);
+    next(err);
   }
 });
 

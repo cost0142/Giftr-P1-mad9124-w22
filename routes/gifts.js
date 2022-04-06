@@ -61,16 +61,18 @@ const update =
 // Gift PUT route
 router.put("/:id", authAdmin, update(true));
 
-router.patch("/:id", authAdmin, update(false)),
-  router.delete("/:id", authAdmin, async (req, res) => {
-    try {
-      const document = await Course.findByIdAndDelete(req.params.id);
-      if (!document) throw new Error("resource not found");
-      res.send({ data: formatResponseData(document) });
-    } catch (err) {
-      sendResourceNotFound(req, res);
-    }
-  });
+// Gift PATCH route
+router.patch("/:id", authAdmin, update(false));
+
+router.delete("/:id", authAdmin, async (req, res) => {
+  try {
+    const document = await Course.findByIdAndDelete(req.params.id);
+    if (!document) throw new Error("resource not found");
+    res.send({ data: formatResponseData(document) });
+  } catch (err) {
+    sendResourceNotFound(req, res);
+  }
+});
 
 /**
  * Format the response data object according to JSON:API v1.0

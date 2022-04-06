@@ -32,15 +32,15 @@ router.post("/", authUser, sanitizeBody, async (req, res, next) => {
 
 router.get("/:id", authUser, async (req, res) => {
   try {
-    const document = await Student.findById(req.params.id);
-    if (!document) throw new Error("resource not found");
-    res.json({ data: formatResponseData(document) });
+    const document = await Person.findById(req.params.id).populate("gifts");
+    if (!document)
+      throw new sendResourceNotFoundException("Resource not found");
+
+    res.send({ data: document });
   } catch (err) {
     sendResourceNotFound(req, res);
   }
 });
-
-// ------------------------------------
 
 const update =
   (overwrite = false) =>

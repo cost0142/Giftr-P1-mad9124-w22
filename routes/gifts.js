@@ -1,24 +1,26 @@
 import createDebug from "debug";
 import sanitizeBody from "../middleware/sanitizeBody.js";
-import Course from "../models/Course.js";
+import Gift from "../models/Gift.js";
 import express from "express";
 import authUser from "../middleware/auth.js";
 import authAdmin from "../middleware/authAdmin.js";
 
-const debug = createDebug("mad9124-w21-a3-jwt-auth");
+const debug = createDebug("mad9124-w22-p1-giftr");
 const router = express.Router();
 
 router.use("/", authUser, sanitizeBody);
+
+//Gift GET all route
 router.get("/", async (req, res) => {
-  let courses = await Course.find();
-  res.send({ data: formatResponseData(courses) });
+  let gifts = await Gift.find();
+  res.send({ data: formatResponseData(gifts) });
 });
 
-// Course POST route.
+// Gift POST route
 router.post("/", authAdmin, (req, res, next) => {
-  new Course(req.sanitizedBody)
+  new Gift(req.sanitizedBody)
     .save()
-    .then((newCourse) => res.status(201).json(formatResponseData(newCourse)))
+    .then((newGift) => res.status(201).json(formatResponseData(newGift)))
     .catch(next);
 });
 

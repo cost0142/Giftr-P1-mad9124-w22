@@ -85,7 +85,7 @@ router.delete("/:id", authAdmin, async (req, res, next) => {
  * @returns
  */
 
-function formatResponseData(payload, type = "course") {
+function formatResponseData(payload, type = "gift") {
   if (payload instanceof Array) {
     return payload.map((resource) => format(resource));
   } else {

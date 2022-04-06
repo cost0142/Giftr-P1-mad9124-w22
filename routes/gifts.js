@@ -58,13 +58,10 @@ const update =
     }
   };
 
-router.put(
-  "/:id",
-  authAdmin,
-  update(true),
+// Gift PUT route
+router.put("/:id", authAdmin, update(true));
 
-  router.patch("/:id", authAdmin, update(false)),
-
+router.patch("/:id", authAdmin, update(false)),
   router.delete("/:id", authAdmin, async (req, res) => {
     try {
       const document = await Course.findByIdAndDelete(req.params.id);
@@ -73,8 +70,7 @@ router.put(
     } catch (err) {
       sendResourceNotFound(req, res);
     }
-  })
-);
+  });
 
 /**
  * Format the response data object according to JSON:API v1.0

@@ -47,9 +47,9 @@ router.get("/:id", authUser, async (req, res, next) => {
 // Gift UPDATE route
 const update =
   (overwrite = false) =>
-  async (req, res) => {
+  async (req, res, next) => {
     try {
-      const document = await Gift.findByIdAndUpdate(
+      const gift = await Gift.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
         {
@@ -58,10 +58,14 @@ const update =
           runValidators: true,
         }
       );
-      if (!document) throw new Error("Resource not found");
-      res.send({ data: formatResponseData(document) });
+
+      if (!gift) {
+        throw new ResourceNotFoundError(
+          `We could not find a gift with id: ${req.params.id}`
+        );
+      }
     } catch (err) {
-      sendResourceNotFound(req, res);
+      next(err);
     }
   };
 

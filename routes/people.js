@@ -68,18 +68,19 @@ router.put(
   authAdmin,
   sanitizeBody,
   update(true),
-  router.patch("/:id", authUser, sanitizeBody, update(false)),
-
-  router.delete("/:id", authAdmin, async (req, res) => {
-    try {
-      const document = await Student.findByIdAndDelete(req.params.id);
-      if (!document) throw new Error("resource not found");
-      res.send({ data: formatResponseData(document) });
-    } catch (err) {
-      sendResourceNotFound(req, res);
-    }
-  })
+  router.patch("/:id", authUser, sanitizeBody, update(false))
 );
+
+router.delete("/:id", authUser, async (req, res) => {
+  try {
+    const document = await Person.findByIdAndRemove(req.params.id);
+    if (!document)
+      throw new sendResourceNotFoundException("Resource not found");
+    res.send({ data: document });
+  } catch (err) {
+    handleErrors(req, res);
+  }
+});
 
 /**
  * Format the response data object according to JSON:API v1.0

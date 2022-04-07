@@ -9,3 +9,5 @@ class ResourceNotFoundException extends Error {
     this.description = this.message;
   }
 }
+
+export default ResourceNotFoundException;

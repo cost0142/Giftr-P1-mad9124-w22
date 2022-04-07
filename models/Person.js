@@ -6,7 +6,6 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
       maxlength: 254,
-      required: true,
     },
     birthDate: {
       type: Date,

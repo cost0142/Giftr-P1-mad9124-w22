@@ -1,7 +1,4 @@
-import createDebug from "debug";
 import xss from "xss";
-
-const debug = createDebug("mad9124-w21-a3-jwt-auth");
 
 const sanitize = (sourceString) => {
   return xss(sourceString, {

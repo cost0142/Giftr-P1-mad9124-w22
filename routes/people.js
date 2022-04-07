@@ -3,22 +3,18 @@ import Person from "../models/Person.js";
 
 import express from "express";
 
-
 import authUser from "../middleware/auth.js";
 import authAdmin from "../middleware/authAdmin.js";
 
 import ResourceNotFoundException from "../exceptions/ResourceNotFoundException.js";
 
-const debug = createDebug("mad9124-w22-p1-giftr");
 const router = express.Router();
 
 router.use("/", authUser, sanitizeBody);
 
 router.get("/", authUser, async (req, res) => {
-
   const collection = await Person.find();
   res.send({ data: formatResponseData(collection) });
-
 });
 
 // Person POST route.
@@ -31,13 +27,11 @@ router.post("/", authAdmin, (req, res, next) => {
 
 router.get("/:id", authUser, async (req, res, next) => {
   try {
-
     const person = await Person.findById(req.params.id).populate("gifts");
     if (!person) {
       throw new ResourceNotFoundException("Person not found");
     }
     res.json(formatResponseData(person));
-
   } catch (err) {
     next(err);
   }
@@ -47,9 +41,7 @@ const update =
   (overwrite = false) =>
   async (req, res, next) => {
     try {
-
       const person = await Person.findByIdAndUpdate(
-
         req.params.id,
         req.sanitizedBody,
         {
@@ -61,7 +53,6 @@ const update =
 
       if (!person) throw new ResourceNotFoundException("Person not found");
       res.send({ data: person });
-
     } catch (err) {
       next(err);
     }
@@ -73,12 +64,10 @@ router.patch("/:id", authUser, update(false));
 
 router.delete("/:id", authUser, async (req, res, next) => {
   try {
-
     const person = await Person.findByIdAndRemove(req.params.id);
     if (!person) {
       throw new ResourceNotFoundError(
         `We could not find a person with id: ${req.params.id}`
-
       );
     }
   } catch (err) {

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=mad9124-w21-a3-jwt-auth:* nodemon server.js"
+    "start": "DEBUG=mad9124-w22-p1-giftr:* nodemon server.js"
   },
   "keywords": [
     "MAD9124",

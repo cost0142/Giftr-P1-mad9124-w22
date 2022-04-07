@@ -3,7 +3,7 @@ import uniqueValidator from "mongoose-unique-validator";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import config from "config";
+
 
 const saltRounds = 14;
 

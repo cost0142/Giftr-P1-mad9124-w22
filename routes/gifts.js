@@ -1,29 +1,22 @@
-import createDebug from "debug";
 import sanitizeBody from "../middleware/sanitizeBody.js";
 import Gift from "../models/Gift.js";
+import Person from "../models/Person.js";
 import express from "express";
-
 import authUser from "../middleware/auth.js";
-import authAdmin from "../middleware/authAdmin.js";
-
 import ResourceNotFoundError from "../exceptions/ResourceNotFoundException.js";
 
-const debug = createDebug("mad9124-w22-p1-giftr");
 const router = express.Router();
 
 router.use("/", authUser, sanitizeBody);
 
 // Gift POST route
-router.post("/", authAdmin, (req, res, next) => {
+router.post("/:id/gifts", (req, res, next) => {
   new Gift(req.sanitizedBody)
     .save()
     .then((newGift) => res.status(201).json(formatResponseData(newGift)))
     .catch(next);
 });
 
-// ------------------------------------
-
-// Gift UPDATE route
 const update =
   (overwrite = false) =>
   async (req, res, next) => {
@@ -49,10 +42,10 @@ const update =
   };
 
 // Gift PATCH route
-router.patch("/:id", authAdmin, update(false));
+router.patch("/:id/gifts/:giftId", update(false));
 
 //Gift delete route
-router.delete("/:id", authAdmin, async (req, res, next) => {
+router.delete("/:id/gifts/:giftId", async (req, res, next) => {
   try {
     const gift = await Gift.findByIdAndRemove(req.params.id);
     if (!gift) {

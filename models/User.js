@@ -4,7 +4,6 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 
-
 const saltRounds = 14;
 
 const schema = new mongoose.Schema(
@@ -28,7 +27,6 @@ const schema = new mongoose.Schema(
       },
     },
     password: { type: String, trim: true, required: true, maxlength: 70 },
-    isAdmin: { type: Boolean, trim: true, required: true, default: false },
   },
   { timestamps: true }
 );

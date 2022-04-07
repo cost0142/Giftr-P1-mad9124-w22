@@ -1,14 +1,13 @@
-import User from "../../models/Users.js";
+import User from "../../models/User.js";
 import sanitizeBody from "../../middleware/sanitizeBody.js";
 import createDebug from "debug";
 import express from "express";
 import authenticate from "../../middleware/auth.js";
 
-const debug = createDebug("MAD9124-w21-A3-JWT-AUT:routes:auth");
+const debug = createDebug("mad9124-w22-p1-giftr:routes:auth");
 const router = express.Router();
 
 router.use("/", sanitizeBody);
-
 
 router.post("/users", sanitizeBody, async (req, res) => {
   try {

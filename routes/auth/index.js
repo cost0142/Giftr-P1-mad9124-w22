@@ -1,92 +1,34 @@
 import User from "../../models/User.js";
 import sanitizeBody from "../../middleware/sanitizeBody.js";
-import createDebug from "debug";
 import express from "express";
 import authenticate from "../../middleware/auth.js";
 
-const debug = createDebug("mad9124-w22-p1-giftr:routes:auth");
 const router = express.Router();
 
-router.use("/", sanitizeBody);
+router.post("/users", sanitizeBody, async (req, res, next) => {
+  new User(req.sanitizedBody)
+    .save()
+    .then((newUser) => res.status(201).send({ data: newUser }))
+    .catch(next);
+});
 
-router.post("/users", sanitizeBody, async (req, res) => {
-  try {
-    const newUser = new User(req.sanitizedBody);
-    const itExists = Boolean(
-      await User.countDocuments({ email: newUser.email })
-    );
-    if (itExists) {
-      return res.status(400).json({
-        errors: [
-          {
-            status: "400",
-            title: "Validation Error",
-            detail: `Email address '${newUser.email}' is already registered.`,
-            source: { pointer: "/data/attributes/email" },
-          },
-        ],
-      });
-    }
-    await newUser.save();
-    res.status(201).json(formatResponseData(newUser));
-  } catch (err) {
-    debug("Error saving new user: ", err.message);
-    res.status(500).json({
-      errors: [
-        {
-          status: "500",
-          title: "Server error",
-          description: "Problem saving document to the database.",
-        },
-      ],
-    });
-  }
-});
-// Login Tokens.
-router.post("/tokens", sanitizeBody, async (req, res) => {
-  const { email, password } = req.sanitizedBody;
-  const user = await User.authenticate(email, password);
-  if (!user) {
-    return res.status(401).json({
-      errors: [
-        {
-          status: "401",
-          title: "Incorrect username or password.",
-        },
-      ],
-    });
-  }
-  res
-    .status(201)
-    .json(
-      formatResponseData({ accessToken: user.generateAuthToken() }, "tokens")
-    );
-});
 router.get("/users/me", authenticate, async (req, res) => {
-  const user = await User.findById(req.user._id).select("-password -__v");
+  req.user._id;
+  const user = await User.findById(req.user._id);
   res.json(formatResponseData(user));
 });
 
-router.post("/tokens", async (req, res) => {
+//login user and return token
+router.post("/tokens", sanitizeBody, async (req, res) => {
   const { email, password } = req.sanitizedBody;
-  let didSucceed;
+
   const user = await User.authenticate(email, password);
-
-  if (user) didSucceed = true;
-  else didSucceed = false;
-
-  const login = {
-    username: email,
-    ipAddress: req.ip,
-    didSucceed,
-    createAt: new Date(),
-  };
 
   const newLogin = new authAttempts(login);
   await newLogin.save();
 
   if (!user) {
-    return res.status(401).json({
+    return res.status(401).send({
       errors: [
         {
           status: "401",
@@ -96,11 +38,18 @@ router.post("/tokens", async (req, res) => {
     });
   }
 
-  res
-    .status(201)
-    .json(
-      formatResponseData({ accessToken: user.generateAuthToken() }, "tokens")
-    );
+  res.status(201).send({ data: { token: user.generateAuthToken() } });
+});
+
+//change password
+router.patch("/users/me", authenticate, sanitizeBody, async (req, res) => {
+  const { email, password } = req.sanitizedBody;
+  let user = await User.findOne({ _id: req.user._id }, function (err, doc) {
+    if (err) res.send(err);
+    doc.password = password;
+    doc.save();
+  });
+  res.status(200).send({ data: user });
 });
 
 /**
@@ -109,6 +58,7 @@ router.post("/tokens", async (req, res) => {
  * @param {Object | Object[]} payload An array or instance object from that collection
  * @returns
  */
+
 function formatResponseData(payload, type = "users") {
   if (payload instanceof Array) {
     return { data: payload.map((resource) => format(resource)) };

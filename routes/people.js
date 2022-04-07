@@ -1,31 +1,29 @@
 import sanitizeBody from "../middleware/sanitizeBody.js";
 import Person from "../models/Person.js";
-
+import User from "../models/User.js";
 import express from "express";
-
 import authUser from "../middleware/auth.js";
-import authAdmin from "../middleware/authAdmin.js";
-
 import ResourceNotFoundException from "../exceptions/ResourceNotFoundException.js";
 
 const router = express.Router();
 
 router.use("/", authUser, sanitizeBody);
 
-router.get("/", authUser, async (req, res) => {
-  const collection = await Person.find();
+router.get("/", async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const collection = await Person.find({ owner: user });
   res.send({ data: formatResponseData(collection) });
 });
 
 // Person POST route.
-router.post("/", authAdmin, (req, res, next) => {
+router.post("/", (req, res, next) => {
   new Person(req.sanitizedBody)
     .save()
     .then((newPerson) => res.status(201).json(formatResponseData(newPerson)))
     .catch(next);
 });
 
-router.get("/:id", authUser, async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const person = await Person.findById(req.params.id).populate("gifts");
     if (!person) {
@@ -58,11 +56,11 @@ const update =
     }
   };
 
-router.put("/:id", authAdmin, update(true));
+router.put("/:id", update(true));
 
-router.patch("/:id", authUser, update(false));
+router.patch("/:id", update(false));
 
-router.delete("/:id", authUser, async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const person = await Person.findByIdAndRemove(req.params.id);
     if (!person) {

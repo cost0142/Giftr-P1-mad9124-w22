@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 });
 
 // Person POST route.
-router.post("/", (req, res, next) => {
+router.post("/", async (req, res, next) => {
   new Person(req.sanitizedBody)
     .save()
     .then((newPerson) => res.status(201).json(formatResponseData(newPerson)))

@@ -41,8 +41,7 @@ router.post("/tokens", sanitizeBody, async (req, res) => {
 //change password
 router.patch("/users/me", authenticate, sanitizeBody, async (req, res) => {
   const { email, password } = req.sanitizedBody;
-  let user = await User.findOne({ _id: req.user._id }, function (err, doc) {
-    if (err) res.send(err);
+  let user = await User.findOneAndUpdate({ _id: req.user._id }, function (doc) {
     doc.password = password;
     doc.save();
   });

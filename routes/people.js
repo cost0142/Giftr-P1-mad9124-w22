@@ -45,7 +45,7 @@ const update =
   (overwrite = false) =>
   async (req, res, next) => {
     try {
-      const person = await Person.findByIdAndUpdate(
+      const document = await Person.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
         {
@@ -55,8 +55,8 @@ const update =
         }
       );
 
-      if (!person) throw new ResourceNotFoundException("Person not found");
-      res.send({ data: formatResponseData(person) });
+      if (!document) throw new ResourceNotFoundException("Person not found");
+      res.send({ data: formatResponseData(document) });
     } catch (err) {
       next(err);
     }

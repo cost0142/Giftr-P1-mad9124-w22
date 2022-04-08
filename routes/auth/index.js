@@ -49,13 +49,6 @@ router.patch("/users/me", authenticate, sanitizeBody, async (req, res) => {
   res.status(200).send({ data: user });
 });
 
-/**
- * Format the response data object according to JSON:API v1.0
- * @param {string} type The resource collection name, e.g. 'cars'
- * @param {Object | Object[]} payload An array or instance object from that collection
- * @returns
- */
-
 function formatResponseData(payload, type = "users") {
   if (payload instanceof Array) {
     return { data: payload.map((resource) => format(resource)) };

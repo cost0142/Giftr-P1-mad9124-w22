@@ -1,4 +1,3 @@
-// Don't forget to use NPM to install Express and Mongoose.
 import morgan from "morgan";
 import express from "express";
 import sanitizeMongo from "express-mongo-sanitize";

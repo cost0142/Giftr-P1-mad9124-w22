@@ -19,7 +19,7 @@ app.use(sanitizeMongo());
 
 // Routes
 app.use("/auth", authRouter);
-app.use("/api/gifts", giftsRouter);
+app.use("/api/people", giftsRouter);
 app.use("/api/people", peopleRouter);
 
 app.use(logError);

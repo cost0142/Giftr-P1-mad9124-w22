@@ -1,4 +1,3 @@
-// Hygor Costa
 class ResourceNotFoundException extends Error {
   constructor(...arg) {
     super(...arg);

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { gift } from "../models/Gift.js";
 const schema = new mongoose.Schema(
   {
     name: {
@@ -18,7 +19,7 @@ const schema = new mongoose.Schema(
       default: "Current User",
     },
     sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    gifts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gift" }],
+    gifts: [gift],
     imageUrl: { type: String, maxlength: 1024 },
   },
   {

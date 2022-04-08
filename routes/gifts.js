@@ -10,11 +10,20 @@ const router = express.Router();
 router.use("/", authUser, sanitizeBody);
 
 // Gift POST route
-router.post("/:id/gifts", (req, res, next) => {
-  new Gift(req.sanitizedBody)
+router.post("/:id/gifts", async (req, res, next) => {
+  const gift = new Gift(req.sanitizedBody);
+  const id = req.url.split("/")[1];
+  const person = await Person.findById(id);
+  let newPerson = person;
+  await gift
     .save()
-    .then((newGift) => res.status(201).json(formatResponseData(newGift)))
-    .catch(next);
+    .then(async (gift) => {
+      newPerson.gifts.push(gift);
+      await Person.findByIdAndUpdate(id, newPerson).then(() => {
+        res.status(201).json(formatResponseData(gift));
+      });
+    })
+    .catch();
 });
 
 const update =

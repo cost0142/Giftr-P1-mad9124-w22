@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const schema = new mongoose.Schema(
   {
     name: {
@@ -16,8 +15,7 @@ const schema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-
-      // default: "Current User", // ??? what is this?
+      default: "Current User",
     },
     sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     gifts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gift" }],

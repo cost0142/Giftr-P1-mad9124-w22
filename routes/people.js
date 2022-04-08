@@ -10,14 +10,20 @@ const router = express.Router();
 router.use("/", authUser, sanitizeBody);
 
 router.get("/", async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const collection = await Person.find({ owner: user });
+  const collection = await Person.find().populate("gifts");
   res.send({ data: formatResponseData(collection) });
 });
 
-// Person POST route.
 router.post("/", async (req, res, next) => {
-  new Person(req.sanitizedBody)
+  let id;
+  await User.findById(req.user._id).then((user) => {
+    console.log(user);
+    id = user._id;
+  });
+
+  const person = new Person(req.sanitizedBody);
+  person.owner = id;
+  await person
     .save()
     .then((newPerson) => res.status(201).json(formatResponseData(newPerson)))
     .catch(next);
@@ -50,7 +56,7 @@ const update =
       );
 
       if (!person) throw new ResourceNotFoundException("Person not found");
-      res.send({ data: person });
+      res.send({ data: formatResponseData(person) });
     } catch (err) {
       next(err);
     }
@@ -68,19 +74,11 @@ router.delete("/:id", async (req, res, next) => {
         `We could not find a person with id: ${req.params.id}`
       );
     }
+    res.send({ data: formatResponseData(person) });
   } catch (err) {
     next(err);
   }
 });
-
-/**
- * Format the response data object according to JSON:API v1.0
-
- * @param {string} type The resource collection name, e.g. 'cars'
-
- * @param {Object | Object[]} payload An array or instance object from that collection
- * @returns
- */
 
 function formatResponseData(payload, type = "people") {
   if (payload instanceof Array) {

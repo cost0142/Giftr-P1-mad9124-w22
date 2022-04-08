@@ -26,7 +26,7 @@ export default function handleError(err, req, res, next) {
 
   let payload = [err];
   if (code === 400) payload = formatValidationError(err.errors);
-  if (code === 500) payload = formatValidationError(err);
+  if (code === 500) payload = formatServerError(err);
 
   res.status(code).json({
     errors: payload,

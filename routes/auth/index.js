@@ -24,9 +24,6 @@ router.post("/tokens", sanitizeBody, async (req, res) => {
 
   const user = await User.authenticate(email, password);
 
-  const newLogin = new authAttempts(login);
-  await newLogin.save();
-
   if (!user) {
     return res.status(401).send({
       errors: [

@@ -5,10 +5,10 @@ import authenticate from "../../middleware/auth.js";
 
 const router = express.Router();
 
-router.post("/users", sanitizeBody, async (req, res, next) => {
+router.post("/users", sanitizeBody, (req, res, next) => {
   new User(req.sanitizedBody)
     .save()
-    .then((newUser) => res.status(201).send({ data: newUser }))
+    .then((newUser) => res.status(201).json(formatResponseData(newUser)))
     .catch(next);
 });
 

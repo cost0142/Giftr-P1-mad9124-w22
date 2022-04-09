@@ -23,7 +23,7 @@ router.post("/:id/gifts", async (req, res, next) => {
         res.status(201).json(formatResponseData(gift));
       });
     })
-    .catch();
+    .catch(next);
 });
 
 const update =

@@ -31,7 +31,7 @@ const schema = new mongoose.Schema(
 
 schema.methods.generateAuthToken = function () {
   const payload = { user: { _id: this._id } };
-  return jwt.sign(payload, "assignmentThreeKey");
+  return jwt.sign(payload, "superSecretKey");
 };
 
 schema.methods.toJSON = function () {

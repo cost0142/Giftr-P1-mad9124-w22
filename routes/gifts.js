@@ -55,13 +55,17 @@ router.patch("/:id/gifts/:giftId", update(false));
 
 //Gift delete route
 router.delete("/:id/gifts/:giftId", async (req, res, next) => {
+  const person = await Person.findById(req.params.id);
   try {
-    const gift = await Gift.findByIdAndRemove(req.params.id);
-    if (!gift) {
+    const document = await Gift.findByIdAndRemove(req.params.giftId);
+    person.gifts.id(req.params.giftId).remove();
+    person.save();
+    if (!document) {
       throw new ResourceNotFoundError(
-        `We could not find a gift with id: ${req.params.id}`
+        `We could not find a gift with id: ${req.params.giftId}`
       );
     }
+    res.send({ data: formatResponseData(document) });
   } catch (err) {
     next(err);
   }

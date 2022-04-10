@@ -5,7 +5,7 @@ export const gift = new mongoose.Schema({
   price: { type: Number, min: 100, default: 1000 },
   imageUrl: { type: String, min: 1024 },
   store: { type: Object },
-  name: { type: String, maxlength: 254 },
+  StoreName: { type: String, maxlength: 254 },
   productURL: { type: String, maxlength: 1024 },
 });
 

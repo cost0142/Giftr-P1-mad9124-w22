@@ -31,7 +31,7 @@ const update =
   async (req, res, next) => {
     try {
       const gift = await Gift.findByIdAndUpdate(
-        req.params.id,
+        req.params.giftId,
         req.sanitizedBody,
         {
           new: true,
@@ -42,9 +42,30 @@ const update =
 
       if (!gift) {
         throw new ResourceNotFoundError(
-          `We could not find a gift with id: ${req.params.id}`
+          `We could not find a gift with id: ${req.params.giftId}`
         );
       }
+      const person = await Person.findById(req.params.id);
+      let newPerson = person;
+
+      newPerson.gifts.id(req.params.giftId).name = req.sanitizedBody.name;
+
+      newPerson.gifts.id(req.params.giftId).price = req.sanitizedBody.price;
+
+      newPerson.gifts.id(req.params.giftId).imageUrl =
+        req.sanitizedBody.imageUrl;
+
+      newPerson.gifts.id(req.params.giftId).store = req.sanitizedBody.store;
+
+      newPerson.gifts.id(req.params.giftId).storeName =
+        req.sanitizedBody.storeName;
+
+      newPerson.gifts.id(req.params.giftId).productURL =
+        req.sanitizedBody.productURL;
+
+      newPerson.save();
+
+      res.send({ data: formatResponseData(gift) });
     } catch (err) {
       next(err);
     }

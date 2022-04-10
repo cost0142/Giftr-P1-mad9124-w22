@@ -21,9 +21,7 @@ router.get("/users/me", authenticate, async (req, res) => {
 //login user and return token
 router.post("/tokens", sanitizeBody, async (req, res) => {
   const { email, password } = req.sanitizedBody;
-
   const user = await User.authenticate(email, password);
-
   if (!user) {
     return res.status(401).send({
       errors: [
@@ -39,13 +37,13 @@ router.post("/tokens", sanitizeBody, async (req, res) => {
 });
 
 //change password
-router.patch("/users/me", authenticate, sanitizeBody, async (req, res) => {
-  const { email, password } = req.sanitizedBody;
-  let user = await User.findOneAndUpdate({ _id: req.user._id }, function (doc) {
-    doc.password = password;
-    doc.save();
+router.patch("/users/me", sanitizeBody, authenticate, async (req, res) => {
+  const { password } = req.sanitizedBody;
+
+  let user = await User.findByIdAndUpdate(req.user._id, {
+    password: password,
   });
-  res.status(200).send({ data: user });
+  res.status(201).send(formatResponseData(user));
 });
 
 function formatResponseData(payload, type = "users") {

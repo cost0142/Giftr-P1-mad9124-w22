@@ -21,8 +21,8 @@ const schema = new mongoose.Schema(
         message: (props) => `${props.value} is not a valid email address.`,
       },
     },
+
     password: { type: String, maxlength: 70, required: true },
-    isAdmin: { type: Boolean, required: true, default: false },
   },
   {
     timestamps: true,
@@ -52,6 +52,16 @@ schema.statics.authenticate = async function (email, password) {
 schema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, saltRounds);
+  next();
+});
+
+schema.pre("findOneAndUpdate", async function (next) {
+  if (this._update.password) {
+    this._update.password = await bcrypt.hash(
+      this._update.password,
+      saltRounds
+    );
+  }
   next();
 });
 

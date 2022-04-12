@@ -3,6 +3,7 @@ import Gift from "../models/Gift.js";
 import Person from "../models/Person.js";
 import express from "express";
 import authUser from "../middleware/auth.js";
+import authGift from "../middleware/authGifts.js";
 import ResourceNotFoundError from "../exceptions/ResourceNotFoundException.js";
 
 const router = express.Router();
@@ -10,7 +11,7 @@ const router = express.Router();
 router.use("/", authUser, sanitizeBody);
 
 // Gift POST route
-router.post("/:id/gifts", async (req, res, next) => {
+router.post("/:id/gifts", authGift, async (req, res, next) => {
   const gift = new Gift(req.sanitizedBody);
   const id = req.url.split("/")[1];
   const person = await Person.findById(id);
@@ -72,10 +73,10 @@ const update =
   };
 
 // Gift PATCH route
-router.patch("/:id/gifts/:giftId", update(false));
+router.patch("/:id/gifts/:giftId", authGift, update(false));
 
 //Gift delete route
-router.delete("/:id/gifts/:giftId", async (req, res, next) => {
+router.delete("/:id/gifts/:giftId", authGift, async (req, res, next) => {
   const person = await Person.findById(req.params.id);
   try {
     const document = await Gift.findByIdAndRemove(req.params.giftId);

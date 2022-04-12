@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import express from "express";
 import authUser from "../middleware/auth.js";
 import ResourceNotFoundException from "../exceptions/ResourceNotFoundException.js";
+import authOwner from "../middleware/authOwner.js";
 
 const router = express.Router();
 
@@ -66,7 +67,7 @@ router.put("/:id", update(true));
 
 router.patch("/:id", update(false));
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authOwner, async (req, res, next) => {
   try {
     const person = await Person.findByIdAndRemove(req.params.id);
     if (!person) {

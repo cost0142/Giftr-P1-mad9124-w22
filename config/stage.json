@@ -1,0 +1,10 @@
+{
+  "db": {
+    "scheme": "mongodb+srv",
+    "username": "JiaqianHygor",
+    "password": "6974531madd",
+    "host": "giftr.atlw9.mongodb.net",
+    "authSource": "myFirstDatabase",
+    "name": "w22-final-giftr"
+  }
+}

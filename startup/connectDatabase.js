@@ -21,8 +21,7 @@ export default async function connectDatabase() {
     await mongoose.connect(connectionString, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
+
       dbName: name,
     });
     log.info(`Connected to MongoDB @ ${name}...`);

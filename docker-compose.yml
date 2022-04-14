@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  express:
+    image: giftr-api-w22
+    container_name: giftr-api-w22
+    environment:
+      API_JWTKEY: keur0uhwg802fkzh6e72lw0m69g3xv
+      API_PORT: 80
+      NODE_ENV: "stage"
+    ports:
+      - 3030:80
+    command: node server.js

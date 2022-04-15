@@ -8,10 +8,10 @@ import ResourceNotFoundError from "../exceptions/ResourceNotFoundException.js";
 
 const router = express.Router();
 
-router.use("/", authUser, sanitizeBody);
+router.use("/", authUser);
 
 // Gift POST route
-router.post("/:id/gifts", authGift, async (req, res, next) => {
+router.post("/:id/gifts", authGift, sanitizeBody, async (req, res, next) => {
   const gift = new Gift(req.sanitizedBody);
   const id = req.url.split("/")[1];
   const person = await Person.findById(id);
@@ -73,7 +73,7 @@ const update =
   };
 
 // Gift PATCH route
-router.patch("/:id/gifts/:giftId", authGift, update(false));
+router.patch("/:id/gifts/:giftId", authGift, sanitizeBody, update(false));
 
 //Gift delete route
 router.delete("/:id/gifts/:giftId", authGift, async (req, res, next) => {

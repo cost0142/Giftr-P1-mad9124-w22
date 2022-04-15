@@ -8,14 +8,14 @@ import authOwner from "../middleware/authOwner.js";
 
 const router = express.Router();
 
-router.use("/", authUser, sanitizeBody);
+router.use("/", authUser);
 
 router.get("/", async (req, res) => {
   const collection = await Person.find();
   res.send({ data: formatResponseData(collection) });
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", sanitizeBody, async (req, res, next) => {
   let id;
   await User.findById(req.user._id).then((user) => {
     console.log(user);
@@ -63,9 +63,9 @@ const update =
     }
   };
 
-router.put("/:id", update(true));
+router.put("/:id", sanitizeBody, update(true));
 
-router.patch("/:id", update(false));
+router.patch("/:id", sanitizeBody, update(false));
 
 router.delete("/:id", authOwner, async (req, res, next) => {
   try {

@@ -46,16 +46,18 @@ const update =
   (overwrite = false) =>
   async (req, res, next) => {
     try {
+      const user = await User.findById(req.user._id);
       const document = await Person.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
+
         {
           new: true,
           overwrite,
           runValidators: true,
         }
       );
-
+      document.owner = user._id;
       if (!document) throw new ResourceNotFoundException("Person not found");
       res.send({ data: formatResponseData(document) });
     } catch (err) {

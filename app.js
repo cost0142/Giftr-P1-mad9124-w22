@@ -16,8 +16,6 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(sanitizeMongo());
 
-app.get("/", (req, res) => res.send({ data: { healthStatus: "UP" } }));
-
 // Routes
 app.use("/auth", authRouter);
 app.use("/api/people", giftsRouter);
@@ -25,4 +23,5 @@ app.use("/api/people", peopleRouter);
 
 app.use(logError);
 app.use(handleError);
+
 export default app;

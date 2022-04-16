@@ -50,7 +50,6 @@ const update =
       const document = await Person.findByIdAndUpdate(
         req.params.id,
         req.sanitizedBody,
-
         {
           new: true,
           overwrite,

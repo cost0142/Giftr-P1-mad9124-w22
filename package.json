@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=mad9124-w22-p1-giftr:* nodemon server.js",
-    "stage": "NODE_ENV=stage API_JWTKEY=superSecretKey nodemon server.js"
+    "start": "DEBUG=mad9124-w22-p1-giftr:* nodemon server.js"
   },
   "keywords": [
     "MAD9124",
@@ -21,7 +20,6 @@
   "private": true,
   "dependencies": {
     "bcrypt": "^5.0.1",
-    "config": "^3.3.7",
     "debug": "^4.3.4",
     "express": "^4.17.3",
     "express-mongo-sanitize": "^2.2.0",
@@ -30,8 +28,8 @@
     "mongoose-unique-validator": "^3.0.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
+    "npm": "^8.5.5",
     "validator": "^13.7.0",
-    "winston": "^3.7.2",
     "xss": "^1.0.11"
   }
 }
